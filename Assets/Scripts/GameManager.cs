@@ -11,9 +11,26 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject tilesParent;
     [SerializeField] private Vector3 firstTilePos;
 
+
+    private Grid grid;
+
     private void Start()
     {
         SpawnTiles();
+
+
+        grid = new Grid(4);
+        grid.GenerateRandomTilesForNextStep();
+        grid.DebugGridView();
+    }
+
+    private void Update()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            grid.GenerateRandomTilesForNextStep();
+            grid.DebugGridView();
+        }
     }
 
     public void StartGame()
