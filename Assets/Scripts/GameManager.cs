@@ -40,13 +40,11 @@ public class GameManager : MonoBehaviour
 
     public void SpawnTiles()
     {
-        
-        for(int i = 0; i < 4; i++)
+
+        for (int i = 0; i < 16; i++)
         {
-            for (int y = 0; y < 4; y++)
-            {
-                Instantiate(tilePrefab, new Vector3(firstTilePos.x + (stepSize * y), firstTilePos.y + (stepSize * -i), firstTilePos.y), tilePrefab.transform.rotation, tilesParent.transform);
-            }
+            var tile = Instantiate(tilePrefab);
+            tile.transform.SetParent(tilesParent.transform, false);
         }
     }
 }
