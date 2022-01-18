@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,25 +12,29 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject tilesParent;
     [SerializeField] private Vector3 firstTilePos;
 
+    [SerializeField] private int countOfTiles;
+
+    private GameObject[,] tilesUI;
+
 
     private Grid grid;
 
     private void Start()
     {
-        SpawnTiles();
+        tilesUI = new GameObject[countOfTiles, countOfTiles];
 
-
-        grid = new Grid(4);
+        grid = new Grid(countOfTiles);
         grid.GenerateRandomTilesForNextStep();
-        grid.DebugGridView();
+        SpawnTiles();
     }
 
     private void Update()
     {
         if(Input.GetMouseButtonDown(0))
         {
+            grid = new Grid(countOfTiles);
             grid.GenerateRandomTilesForNextStep();
-            grid.DebugGridView();
+            UpdateTiles();
         }
     }
 
@@ -38,13 +43,39 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void RestartGame()
+    {
+        grid = new Grid(countOfTiles);
+        grid.GenerateRandomTilesForNextStep();
+        UpdateTiles();
+    }
+
     public void SpawnTiles()
     {
+        var tiles = grid.GetTiles();
 
-        for (int i = 0; i < 16; i++)
+        for(int i = 0; i < countOfTiles; i++)
         {
-            var tile = Instantiate(tilePrefab);
-            tile.transform.SetParent(tilesParent.transform, false);
+            for(int j = 0; j < countOfTiles; j++)
+            {
+                var tile = Instantiate(tilePrefab, new Vector2(firstTilePos.x + (stepSize * j), firstTilePos.y + (stepSize * -i)), tilePrefab.transform.rotation);
+                tile.transform.SetParent(tilesParent.transform, false);
+                tile.GetComponentInChildren<TextMeshProUGUI>().text = tiles[i, j].TileScore > 0 ? tiles[i, j].TileScore.ToString() : "";
+                tilesUI[i, j] = tile;
+            }
+        }
+    }
+
+    public void UpdateTiles()
+    {
+        var tiles = grid.GetTiles();
+
+        for (int i = 0; i < countOfTiles; i++)
+        {
+            for (int j = 0; j < countOfTiles; j++) 
+            {
+                tilesUI[i, j].GetComponentInChildren<TextMeshProUGUI>().text = tiles[i, j].TileScore > 0 ? tiles[i, j].TileScore.ToString() : "";
+            }
         }
     }
 }

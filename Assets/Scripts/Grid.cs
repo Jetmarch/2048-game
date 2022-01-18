@@ -22,6 +22,11 @@ public class Grid
         }
     }
 
+    public GridTile[,] GetTiles()
+    {
+        return tiles;
+    }
+
     public void DoLeft()
     {
 
@@ -41,30 +46,6 @@ public class Grid
     {
 
     }
-
-    /*public void GenerateRandomTilesForNextStep(int countOfNewTiles = 2)
-    {
-        int countOfGeneratedTiles = 0;
-        foreach(var tile in tiles)
-        {
-            if (tile.IsBusy) continue;
-
-            if (Random.value > 0.5)
-            {
-                tile.TileScore = 2;
-                countOfGeneratedTiles++;
-                if (countOfGeneratedTiles >= countOfNewTiles)
-                {
-                    break;
-                }
-            }
-        }
-
-        if(countOfGeneratedTiles < countOfNewTiles)
-        {
-            GenerateRandomTilesForNextStep(countOfNewTiles - countOfGeneratedTiles);
-        }
-    }*/
 
     public void GenerateRandomTilesForNextStep()
     {

@@ -17,4 +17,9 @@ public class GridTile
     {
         TileScore = score;
     }
+
+    public void MergeCells(GridTile other)
+    {
+        TileScore += other.TileScore;
+    }
 }
