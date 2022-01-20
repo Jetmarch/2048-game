@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridTile
+public class GridTile : MonoBehaviour
 {
+    public int X { get; set; }
+    public int Y { get; set; }
     public int TileScore { get; set; }
 
     //Ячейка считается занятой, если в ней есть значение больше нуля

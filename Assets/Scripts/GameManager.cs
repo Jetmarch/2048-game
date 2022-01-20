@@ -62,6 +62,8 @@ public class GameManager : MonoBehaviour
                 tile.transform.SetParent(tilesParent.transform, false);
                 tile.GetComponentInChildren<TextMeshProUGUI>().text = tiles[i, j].TileScore > 0 ? tiles[i, j].TileScore.ToString() : "";
                 tilesUI[i, j] = tile;
+                tilesUI[i, j].GetComponent<GridTile>().X = j;
+                tilesUI[i, j].GetComponent<GridTile>().Y = i;
             }
         }
     }

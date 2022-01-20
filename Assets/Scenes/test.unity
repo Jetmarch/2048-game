@@ -410,7 +410,7 @@ MonoBehaviour:
   tilePrefab: {fileID: 8580333308584501330, guid: a9672189a0d61a2459d67a36383112aa,
     type: 3}
   tilesParent: {fileID: 1630884059}
-  firstTilePos: {x: -315, y: 318, z: 0}
+  firstTilePos: {x: -337, y: 346, z: 0}
   countOfTiles: 4
 --- !u!1 &1271821005
 GameObject:
