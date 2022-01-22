@@ -32,10 +32,12 @@ public class GameManager : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            grid = new Grid(countOfTiles);
-            grid.GenerateRandomTilesForNextStep();
+            grid.DoLeft();
+            grid.DebugGridView();
             UpdateTiles();
         }
+
+
     }
 
     public void StartGame()
@@ -62,8 +64,8 @@ public class GameManager : MonoBehaviour
                 tile.transform.SetParent(tilesParent.transform, false);
                 tile.GetComponentInChildren<TextMeshProUGUI>().text = tiles[i, j].TileScore > 0 ? tiles[i, j].TileScore.ToString() : "";
                 tilesUI[i, j] = tile;
-                tilesUI[i, j].GetComponent<GridTile>().X = j;
-                tilesUI[i, j].GetComponent<GridTile>().Y = i;
+                tilesUI[i, j].GetComponent<GridTileUI>().x = i;
+                tilesUI[i, j].GetComponent<GridTileUI>().y = j;
             }
         }
     }
