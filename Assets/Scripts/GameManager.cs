@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(1))
         {
             grid.DoLeft();
             grid.DebugGridView();
@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
         grid = new Grid(countOfTiles);
         grid.GenerateRandomTilesForNextStep();
         UpdateTiles();
+        grid.DebugGridView();
     }
 
     public void SpawnTiles()
@@ -62,10 +63,10 @@ public class GameManager : MonoBehaviour
             {
                 var tile = Instantiate(tilePrefab, new Vector2(firstTilePos.x + (stepSize * j), firstTilePos.y + (stepSize * -i)), tilePrefab.transform.rotation);
                 tile.transform.SetParent(tilesParent.transform, false);
-                tile.GetComponentInChildren<TextMeshProUGUI>().text = tiles[i, j].TileScore > 0 ? tiles[i, j].TileScore.ToString() : "";
-                tilesUI[i, j] = tile;
-                tilesUI[i, j].GetComponent<GridTileUI>().x = i;
-                tilesUI[i, j].GetComponent<GridTileUI>().y = j;
+                tile.GetComponentInChildren<TextMeshProUGUI>().text = tiles[j, i].TileScore > 0 ? tiles[j, i].TileScore.ToString() : "";
+                tilesUI[j, i] = tile;
+                tilesUI[j, i].GetComponent<GridTileUI>().x = j;
+                tilesUI[j, i].GetComponent<GridTileUI>().y = i;
             }
         }
     }
@@ -78,7 +79,8 @@ public class GameManager : MonoBehaviour
         {
             for (int j = 0; j < countOfTiles; j++) 
             {
-                tilesUI[i, j].GetComponentInChildren<TextMeshProUGUI>().text = tiles[i, j].TileScore > 0 ? tiles[i, j].TileScore.ToString() : "";
+                tilesUI[j, i].GetComponentInChildren<TextMeshProUGUI>().text = tiles[j, i].TileScore > 0 ? tiles[j, i].TileScore.ToString() : "";
+                tilesUI[j, i].GetComponent<GridTileUI>().tileScore = tiles[j, i].TileScore;
             }
         }
     }

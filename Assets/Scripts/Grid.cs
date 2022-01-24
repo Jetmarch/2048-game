@@ -16,7 +16,7 @@ public class Grid
         {
             for (int j = 0; j < size; j++)
             {
-                tiles[i, j] = new GridTile(i, j);
+                tiles[i, j] = new GridTile(j, i);
             }
         }
     }
@@ -89,7 +89,7 @@ public class Grid
 
     public void DebugGridView()
     {
-        string line = string.Empty;
+        /*string line = string.Empty;
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -98,6 +98,15 @@ public class Grid
             }
             Debug.Log($"{i}: {line}");
             line = string.Empty;
+        }*/
+
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                Debug.Log($"Y: {i} X: {j} Score {tiles[j, i].TileScore}");
+            }
         }
+        
     }
 }
