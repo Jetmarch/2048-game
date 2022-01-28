@@ -28,33 +28,50 @@ public class Grid
 
     public void DoLeft()
     {
-        foreach(var tile in tiles)
+        for(int i = 0; i < size; i++)
         {
-            //Проверка на границы
-            if (tile.X <= 0) continue;
-            if (!tile.IsBusy) continue;
-
-            for(int i = tile.X; i >= 0; i--)
+            for(int j = 0; j < size; j++)
             {
-                //Если это крайний тайл и он не занят
-                if(i == 0 && !tiles[i, tile.Y].IsBusy)
+                //Все первые значения пропускаются
+                if (j == 0)
                 {
-                    tiles[i, tile.Y].ReplaceTiles(tile);
-                    break;
+                    continue;
+                }
+                //Пустые значения пропускаются
+                if (!tiles[j, i].IsBusy)
+                {
+                    continue;
                 }
 
-                //Если тайл не последний и не занят
-                if (!tiles[i, tile.Y].IsBusy) continue;
-
-                //Если очки в тайлах совпадают
-                if(tiles[i, tile.Y].TileScore == tile.TileScore)
+                for(int k = j - 1; k >= 0; k--)
                 {
-                    tiles[i, tile.Y].MergeTiles(tile);
-                    break;
+                    //Всё ещё пропускаем пустые значения
+                    if(!tiles[k, i].IsBusy && k > 0)
+                    {
+                        continue;
+                    }
+                    //Если достигнута первая ячейка
+                    if (!tiles[k, i].IsBusy && k == 0)
+                    {
+                        tiles[k, i].ReplaceTiles(tiles[j, i]);
+                        break;
+                    }
+                    //Если встречена заполненная ячейка
+                    if(tiles[k,i].IsBusy)
+                    {
+                        //Если ячейки совпадают
+                        if(tiles[k, i].TileScore == tiles[j,i].TileScore)
+                        {
+                            tiles[k, i].MergeTiles(tiles[j, i]);
+                        }
+                        else
+                        {
+                            tiles[k + 1, i].ReplaceTiles(tiles[j, i]);
+                        }
+                        break;
+                    }
                 }
 
-                tiles[i, tile.Y].ReplaceTiles(tile);
-                break;
             }
         }
     }
@@ -62,6 +79,52 @@ public class Grid
     public void DoRight()
     {
 
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = size - 1; j >= 0; j--)
+            {
+                //Все первые значения пропускаются
+                if (j == size - 1)
+                {
+                    continue;
+                }
+                //Пустые значения пропускаются
+                if (!tiles[j, i].IsBusy)
+                {
+                    continue;
+                }
+
+                for (int k = j + 1; k < size; k++)
+                {
+                    //Всё ещё пропускаем пустые значения
+                    if (!tiles[k, i].IsBusy && k < size - 1)
+                    {
+                        continue;
+                    }
+                    //Если достигнута первая ячейка
+                    if (!tiles[k, i].IsBusy && k == size - 1)
+                    {
+                        tiles[k, i].ReplaceTiles(tiles[j, i]);
+                        break;
+                    }
+                    //Если встречена заполненная ячейка
+                    if (tiles[k, i].IsBusy)
+                    {
+                        //Если ячейки совпадают
+                        if (tiles[k, i].TileScore == tiles[j, i].TileScore)
+                        {
+                            tiles[k, i].MergeTiles(tiles[j, i]);
+                        }
+                        else
+                        {
+                            tiles[k - 1, i].ReplaceTiles(tiles[j, i]);
+                        }
+                        break;
+                    }
+                }
+
+            }
+        }
     }
 
     public void DoUp()
@@ -76,6 +139,7 @@ public class Grid
 
     public void GenerateRandomTilesForNextStep()
     {
+        //TODO: Фикс ситуации, когда остаётся одна ячейка
         int countOfGeneratedTiles = 0;
         while(countOfGeneratedTiles < 2)
         {

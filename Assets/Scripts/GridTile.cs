@@ -30,6 +30,11 @@ public class GridTile
 
     public void ReplaceTiles(GridTile other)
     {
+        if(this.X == other.X && this.Y == other.Y)
+        {
+            return;
+        }
+
         TileScore = other.TileScore;
         other.TileScore = 0;
     }
