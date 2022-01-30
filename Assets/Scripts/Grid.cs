@@ -230,9 +230,13 @@ public class Grid
 
     public void GenerateRandomTilesForNextStep()
     {
-        //TODO: Фикс ситуации, когда остаётся одна ячейка
+        int countOfFreeTiles = GetCountOfFreeTiles();
+        if (countOfFreeTiles == 0) return;
+
+        int countOfTilesToCreate = Mathf.Clamp(countOfFreeTiles, 1, 2);
+        //TODO: Добавить тайлов из списка пустых
         int countOfGeneratedTiles = 0;
-        while(countOfGeneratedTiles < 2)
+        while(countOfGeneratedTiles < countOfTilesToCreate)
         {
             var rndTile = tiles[Random.Range(0, size), Random.Range(0, size)];
             if (rndTile.IsBusy) continue;
@@ -240,6 +244,25 @@ public class Grid
             rndTile.TileScore = 2;
             countOfGeneratedTiles++;
         }
+    }
+
+    public int GetCountOfFreeTiles()
+    {
+        int countOfFreeTiles = GetCountOfMaxTiles();
+        foreach(var tile in tiles)
+        {
+            if(tile.IsBusy)
+            {
+                countOfFreeTiles--;
+            }
+        }
+
+        return countOfFreeTiles;
+    }
+
+    private int GetCountOfMaxTiles()
+    {
+        return size * size;
     }
 
     public void DebugGridView()

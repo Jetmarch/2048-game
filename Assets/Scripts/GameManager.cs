@@ -42,24 +42,28 @@ public class GameManager : MonoBehaviour
             grid.DoUp();
             grid.GenerateRandomTilesForNextStep();
             UpdateTiles();
+            Debug.Log($"Free tiles: {grid.GetCountOfFreeTiles()}");
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
             grid.DoDown();
             grid.GenerateRandomTilesForNextStep();
             UpdateTiles();
+            Debug.Log($"Free tiles: {grid.GetCountOfFreeTiles()}");
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
             grid.DoRight();
             grid.GenerateRandomTilesForNextStep();
             UpdateTiles();
+            Debug.Log($"Free tiles: {grid.GetCountOfFreeTiles()}");
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
             grid.DoLeft();
             grid.GenerateRandomTilesForNextStep();
             UpdateTiles();
+            Debug.Log($"Free tiles: {grid.GetCountOfFreeTiles()}");
         }
     }
 
