@@ -30,15 +30,37 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(1))
+        /*if(Input.GetMouseButtonDown(1))
         {
-            grid.DoRight();
-            grid.DebugGridView();
-            /*grid.GenerateRandomTilesForNextStep();*/
+            grid.DoDown();
+            *//*grid.DebugGridView();*/
+            /*grid.GenerateRandomTilesForNextStep();*//*
+            UpdateTiles();
+        }*/
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            grid.DoUp();
+            grid.GenerateRandomTilesForNextStep();
             UpdateTiles();
         }
-
-
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            grid.DoDown();
+            grid.GenerateRandomTilesForNextStep();
+            UpdateTiles();
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            grid.DoRight();
+            grid.GenerateRandomTilesForNextStep();
+            UpdateTiles();
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            grid.DoLeft();
+            grid.GenerateRandomTilesForNextStep();
+            UpdateTiles();
+        }
     }
 
     public void StartGame()

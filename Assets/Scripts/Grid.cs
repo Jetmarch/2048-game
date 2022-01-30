@@ -130,11 +130,102 @@ public class Grid
     public void DoUp()
     {
 
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                //Все первые значения пропускаются
+                if (i == 0)
+                {
+                    continue;
+                }
+                //Пустые значения пропускаются
+                if (!tiles[j, i].IsBusy)
+                {
+                    continue;
+                }
+
+                for (int k = i - 1; k >= 0; k--)
+                {
+                    //Всё ещё пропускаем пустые значения
+                    if (!tiles[j, k].IsBusy && k > 0)
+                    {
+                        continue;
+                    }
+                    //Если достигнута первая ячейка
+                    if (!tiles[j, k].IsBusy && k == 0)
+                    {
+                        tiles[j, k].ReplaceTiles(tiles[j, i]);
+                        break;
+                    }
+                    //Если встречена заполненная ячейка
+                    if (tiles[j, k].IsBusy)
+                    {
+                        //Если ячейки совпадают
+                        if (tiles[j, k].TileScore == tiles[j, i].TileScore)
+                        {
+                            tiles[j, k].MergeTiles(tiles[j, i]);
+                        }
+                        else
+                        {
+                            tiles[j, k + 1].ReplaceTiles(tiles[j, i]);
+                        }
+                        break;
+                    }
+                }
+
+            }
+        }
     }
 
     public void DoDown()
     {
+        for (int i = size - 1; i >= 0; i--)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                //Все первые значения пропускаются
+                if (i == size - 1)
+                {
+                    continue;
+                }
+                //Пустые значения пропускаются
+                if (!tiles[j, i].IsBusy)
+                {
+                    continue;
+                }
 
+                for (int k = i + 1; k < size; k++)
+                {
+                    //Всё ещё пропускаем пустые значения
+                    if (!tiles[j, k].IsBusy && k < size - 1)
+                    {
+                        continue;
+                    }
+                    //Если достигнута первая ячейка
+                    if (!tiles[j, k].IsBusy && k == size - 1)
+                    {
+                        tiles[j, k].ReplaceTiles(tiles[j, i]);
+                        break;
+                    }
+                    //Если встречена заполненная ячейка
+                    if (tiles[j, k].IsBusy)
+                    {
+                        //Если ячейки совпадают
+                        if (tiles[j, k].TileScore == tiles[j, i].TileScore)
+                        {
+                            tiles[j, k].MergeTiles(tiles[j, i]);
+                        }
+                        else
+                        {
+                            tiles[j, k - 1].ReplaceTiles(tiles[j, i]);
+                        }
+                        break;
+                    }
+                }
+
+            }
+        }
     }
 
     public void GenerateRandomTilesForNextStep()
