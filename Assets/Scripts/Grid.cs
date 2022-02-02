@@ -7,6 +7,16 @@ public class Grid
     private GridTile[,] tiles;
     private int size;
 
+    /*
+     Реализовать функцию UNDO
+     -- Стэк GridTile[,] в который будет загружаться каждый ход текущее состояние GridTile[,]
+     -- При нажатии на UNDO к текущему состоянию GridTile[,] будет присваиваться предыдущее значение из стэка
+
+     Реализовать событие победы и событие проигрыша
+     -- Победа наступает, когда два тайла, соединившись, образуют сумму 2048
+     -- Поражение наступает, когда при следующем любом ходе не происходит ни движение тайлов, ни их соединение
+     */
+
     public Grid(int size)
     {
         this.size = size;
@@ -241,7 +251,14 @@ public class Grid
             var rndTile = tiles[Random.Range(0, size), Random.Range(0, size)];
             if (rndTile.IsBusy) continue;
 
-            rndTile.TileScore = 2;
+            if (Random.Range(0, 11) < 2)
+            {
+                rndTile.TileScore = 4;
+            }
+            else
+            {
+                rndTile.TileScore = 2;
+            }
             countOfGeneratedTiles++;
         }
     }
