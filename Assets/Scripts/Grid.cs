@@ -6,6 +6,7 @@ public class Grid
 {
     private GridTile[,] tiles;
     private int size;
+    private Stack<GridTile[,]> previousTilesStates;
 
     /*
      Реализовать функцию UNDO
@@ -21,6 +22,7 @@ public class Grid
     {
         this.size = size;
         tiles = new GridTile[size, size];
+        previousTilesStates = new Stack<GridTile[,]>();
 
         for(int i = 0; i < size; i++)
         {
@@ -29,6 +31,9 @@ public class Grid
                 tiles[i, j] = new GridTile(j, i);
             }
         }
+        GenerateRandomTilesForNextStep();
+
+        SaveCurrentTilesStateToStack();
     }
 
     public GridTile[,] GetTiles()
@@ -38,6 +43,8 @@ public class Grid
 
     public void DoLeft()
     {
+        bool isActionTaken = false;
+
         for(int i = 0; i < size; i++)
         {
             for(int j = 0; j < size; j++)
@@ -64,6 +71,7 @@ public class Grid
                     if (!tiles[k, i].IsBusy && k == 0)
                     {
                         tiles[k, i].ReplaceTiles(tiles[j, i]);
+                        isActionTaken = true;
                         break;
                     }
                     //Если встречена заполненная ячейка
@@ -73,6 +81,7 @@ public class Grid
                         if(tiles[k, i].TileScore == tiles[j,i].TileScore)
                         {
                             tiles[k, i].MergeTiles(tiles[j, i]);
+                            isActionTaken = true;
                         }
                         else
                         {
@@ -84,11 +93,18 @@ public class Grid
 
             }
         }
+
+        
+        if (isActionTaken)
+        {
+            GenerateRandomTilesForNextStep();
+            SaveCurrentTilesStateToStack();
+        }
     }
 
     public void DoRight()
     {
-
+        bool isActionTaken = false;
         for (int i = 0; i < size; i++)
         {
             for (int j = size - 1; j >= 0; j--)
@@ -115,6 +131,7 @@ public class Grid
                     if (!tiles[k, i].IsBusy && k == size - 1)
                     {
                         tiles[k, i].ReplaceTiles(tiles[j, i]);
+                        isActionTaken = true;
                         break;
                     }
                     //Если встречена заполненная ячейка
@@ -124,6 +141,7 @@ public class Grid
                         if (tiles[k, i].TileScore == tiles[j, i].TileScore)
                         {
                             tiles[k, i].MergeTiles(tiles[j, i]);
+                            isActionTaken = true;
                         }
                         else
                         {
@@ -135,11 +153,17 @@ public class Grid
 
             }
         }
+
+        if (isActionTaken)
+        {
+            GenerateRandomTilesForNextStep();
+            SaveCurrentTilesStateToStack();
+        }
     }
 
     public void DoUp()
     {
-
+        bool isActionTaken = false;
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -166,6 +190,7 @@ public class Grid
                     if (!tiles[j, k].IsBusy && k == 0)
                     {
                         tiles[j, k].ReplaceTiles(tiles[j, i]);
+                        isActionTaken = true;
                         break;
                     }
                     //Если встречена заполненная ячейка
@@ -175,6 +200,7 @@ public class Grid
                         if (tiles[j, k].TileScore == tiles[j, i].TileScore)
                         {
                             tiles[j, k].MergeTiles(tiles[j, i]);
+                            isActionTaken = true;
                         }
                         else
                         {
@@ -186,10 +212,16 @@ public class Grid
 
             }
         }
+        if (isActionTaken)
+        {
+            GenerateRandomTilesForNextStep();
+            SaveCurrentTilesStateToStack();
+        }
     }
 
     public void DoDown()
     {
+        bool isActionTaken = false;
         for (int i = size - 1; i >= 0; i--)
         {
             for (int j = 0; j < size; j++)
@@ -216,6 +248,7 @@ public class Grid
                     if (!tiles[j, k].IsBusy && k == size - 1)
                     {
                         tiles[j, k].ReplaceTiles(tiles[j, i]);
+                        isActionTaken = true;
                         break;
                     }
                     //Если встречена заполненная ячейка
@@ -225,6 +258,7 @@ public class Grid
                         if (tiles[j, k].TileScore == tiles[j, i].TileScore)
                         {
                             tiles[j, k].MergeTiles(tiles[j, i]);
+                            isActionTaken = true;
                         }
                         else
                         {
@@ -235,6 +269,12 @@ public class Grid
                 }
 
             }
+        }
+
+        if (isActionTaken)
+        {
+            GenerateRandomTilesForNextStep();
+            SaveCurrentTilesStateToStack();
         }
     }
 
@@ -282,6 +322,46 @@ public class Grid
         return size * size;
     }
 
+    private void SaveCurrentTilesStateToStack()
+    {
+        var backup = new GridTile[size, size];
+
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                backup[i, j] = new GridTile(i, j, tiles[i, j].TileScore);
+            }
+        }
+
+        previousTilesStates.Push(backup);
+
+        Debug.Log("State saved!");
+    }
+
+    public void ReturnPreviousState()
+    {
+        Debug.Log($"Count of saves: {previousTilesStates.Count}");
+
+        if (previousTilesStates.Count == 1) return;
+
+        previousTilesStates.Pop();
+
+        var newCurrentState = previousTilesStates.Peek();
+
+        var stateCopy = new GridTile[size, size];
+
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                stateCopy[i, j] = new GridTile(i, j, newCurrentState[i, j].TileScore);
+            }
+        }
+
+        tiles = stateCopy;
+    }
+
     public void DebugGridView()
     {
         /*string line = string.Empty;
@@ -295,13 +375,13 @@ public class Grid
             line = string.Empty;
         }*/
 
-        for (int i = 0; i < size; i++)
+       /* for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
                 Debug.Log($"Y: {i} X: {j} Score {tiles[j, i].TileScore}");
             }
-        }
+        }*/
         
     }
 }

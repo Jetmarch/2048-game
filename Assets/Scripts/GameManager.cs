@@ -24,7 +24,6 @@ public class GameManager : MonoBehaviour
         tilesUI = new GameObject[countOfTiles, countOfTiles];
 
         grid = new Grid(countOfTiles);
-        grid.GenerateRandomTilesForNextStep();
         SpawnTiles();
     }
 
@@ -40,30 +39,22 @@ public class GameManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.W))
         {
             grid.DoUp();
-            grid.GenerateRandomTilesForNextStep();
             UpdateTiles();
-            Debug.Log($"Free tiles: {grid.GetCountOfFreeTiles()}");
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
             grid.DoDown();
-            grid.GenerateRandomTilesForNextStep();
             UpdateTiles();
-            Debug.Log($"Free tiles: {grid.GetCountOfFreeTiles()}");
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
             grid.DoRight();
-            grid.GenerateRandomTilesForNextStep();
             UpdateTiles();
-            Debug.Log($"Free tiles: {grid.GetCountOfFreeTiles()}");
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
             grid.DoLeft();
-            grid.GenerateRandomTilesForNextStep();
             UpdateTiles();
-            Debug.Log($"Free tiles: {grid.GetCountOfFreeTiles()}");
         }
     }
 
@@ -72,16 +63,15 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void NextStep()
+    public void Undo()
     {
-        grid.GenerateRandomTilesForNextStep();
+        grid.ReturnPreviousState();
         UpdateTiles();
     }
 
     public void RestartGame()
     {
         grid = new Grid(countOfTiles);
-        grid.GenerateRandomTilesForNextStep();
         UpdateTiles();
         grid.DebugGridView();
     }

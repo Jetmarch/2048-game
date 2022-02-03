@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridTile
+public class GridTile : ICloneable
 {
     public int X;
     public int Y;
@@ -37,5 +38,10 @@ public class GridTile
 
         TileScore = other.TileScore;
         other.TileScore = 0;
+    }
+
+    public object Clone()
+    {
+        return new GridTile(X, Y, TileScore);
     }
 }
