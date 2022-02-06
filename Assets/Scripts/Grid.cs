@@ -1,21 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Grid
 {
     private GridTile[,] tiles;
     private int size;
     private Stack<GridTile[,]> previousTilesStates;
+    private int winScore = 2048;
+
+    public delegate void GameOverEvent();
+    public event GameOverEvent OnLose;
+    public event GameOverEvent OnWin;
 
     /*
-     Реализовать функцию UNDO
-     -- Стэк GridTile[,] в который будет загружаться каждый ход текущее состояние GridTile[,]
-     -- При нажатии на UNDO к текущему состоянию GridTile[,] будет присваиваться предыдущее значение из стэка
-
      Реализовать событие победы и событие проигрыша
      -- Победа наступает, когда два тайла, соединившись, образуют сумму 2048
      -- Поражение наступает, когда при следующем любом ходе не происходит ни движение тайлов, ни их соединение
+
+    
      */
 
     public Grid(int size)
@@ -41,13 +45,13 @@ public class Grid
         return tiles;
     }
 
-    public void DoLeft()
+    private bool LeftAction(bool isActionNeedAffectOnGrid)
     {
         bool isActionTaken = false;
 
-        for(int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++)
         {
-            for(int j = 0; j < size; j++)
+            for (int j = 0; j < size; j++)
             {
                 //Все первые значения пропускаются
                 if (j == 0)
@@ -60,32 +64,45 @@ public class Grid
                     continue;
                 }
 
-                for(int k = j - 1; k >= 0; k--)
+                for (int k = j - 1; k >= 0; k--)
                 {
                     //Всё ещё пропускаем пустые значения
-                    if(!tiles[k, i].IsBusy && k > 0)
+                    if (!tiles[k, i].IsBusy && k > 0)
                     {
                         continue;
                     }
                     //Если достигнута первая ячейка
                     if (!tiles[k, i].IsBusy && k == 0)
                     {
-                        tiles[k, i].ReplaceTiles(tiles[j, i]);
+                        if (isActionNeedAffectOnGrid)
+                        {
+                            tiles[k, i].ReplaceTiles(tiles[j, i]);
+                        }
                         isActionTaken = true;
                         break;
                     }
                     //Если встречена заполненная ячейка
-                    if(tiles[k,i].IsBusy)
+                    if (tiles[k, i].IsBusy)
                     {
                         //Если ячейки совпадают
-                        if(tiles[k, i].TileScore == tiles[j,i].TileScore)
+                        if (tiles[k, i].TileScore == tiles[j, i].TileScore)
                         {
-                            tiles[k, i].MergeTiles(tiles[j, i]);
+                            if (isActionNeedAffectOnGrid)
+                            {
+                                tiles[k, i].MergeTiles(tiles[j, i]);
+                                if (tiles[k, i].TileScore == winScore)
+                                {
+                                    OnWin();
+                                }
+                            }
                             isActionTaken = true;
                         }
                         else
                         {
-                            tiles[k + 1, i].ReplaceTiles(tiles[j, i]);
+                            if (isActionNeedAffectOnGrid)
+                            {
+                                tiles[k + 1, i].ReplaceTiles(tiles[j, i]);
+                            }
                         }
                         break;
                     }
@@ -94,15 +111,33 @@ public class Grid
             }
         }
 
-        
+        return isActionTaken;
+    }
+
+    public void DoLeft()
+    {
+
+        bool isActionTaken = LeftAction(true);
+
         if (isActionTaken)
         {
             GenerateRandomTilesForNextStep();
             SaveCurrentTilesStateToStack();
         }
+        else
+        {
+            if (UpAction(false) || DownAction(false) || RightAction(false) || LeftAction(false))
+            {
+
+            }
+            else
+            {
+                OnLose();
+            }
+        }
     }
 
-    public void DoRight()
+    private bool RightAction(bool isActionNeedAffectOnGrid)
     {
         bool isActionTaken = false;
         for (int i = 0; i < size; i++)
@@ -130,7 +165,10 @@ public class Grid
                     //Если достигнута первая ячейка
                     if (!tiles[k, i].IsBusy && k == size - 1)
                     {
-                        tiles[k, i].ReplaceTiles(tiles[j, i]);
+                        if (isActionNeedAffectOnGrid)
+                        {
+                            tiles[k, i].ReplaceTiles(tiles[j, i]);
+                        }
                         isActionTaken = true;
                         break;
                     }
@@ -140,12 +178,22 @@ public class Grid
                         //Если ячейки совпадают
                         if (tiles[k, i].TileScore == tiles[j, i].TileScore)
                         {
-                            tiles[k, i].MergeTiles(tiles[j, i]);
+                            if (isActionNeedAffectOnGrid)
+                            {
+                                tiles[k, i].MergeTiles(tiles[j, i]);
+                                if (tiles[k, i].TileScore == winScore)
+                                {
+                                    OnWin();
+                                }
+                            }
                             isActionTaken = true;
                         }
                         else
                         {
-                            tiles[k - 1, i].ReplaceTiles(tiles[j, i]);
+                            if (isActionNeedAffectOnGrid)
+                            {
+                                tiles[k - 1, i].ReplaceTiles(tiles[j, i]);
+                            }
                         }
                         break;
                     }
@@ -154,14 +202,32 @@ public class Grid
             }
         }
 
+        return isActionTaken;
+    }
+
+    public void DoRight()
+    {
+        bool isActionTaken = RightAction(true);
+
         if (isActionTaken)
         {
             GenerateRandomTilesForNextStep();
             SaveCurrentTilesStateToStack();
         }
+        else
+        {
+            if (UpAction(false) || DownAction(false) || RightAction(false) || LeftAction(false))
+            {
+
+            }
+            else
+            {
+                OnLose();
+            }
+        }
     }
 
-    public void DoUp()
+    private bool UpAction(bool isActionNeedAffectOnGrid)
     {
         bool isActionTaken = false;
         for (int i = 0; i < size; i++)
@@ -189,7 +255,10 @@ public class Grid
                     //Если достигнута первая ячейка
                     if (!tiles[j, k].IsBusy && k == 0)
                     {
-                        tiles[j, k].ReplaceTiles(tiles[j, i]);
+                        if (isActionNeedAffectOnGrid)
+                        {
+                            tiles[j, k].ReplaceTiles(tiles[j, i]);
+                        }
                         isActionTaken = true;
                         break;
                     }
@@ -199,12 +268,22 @@ public class Grid
                         //Если ячейки совпадают
                         if (tiles[j, k].TileScore == tiles[j, i].TileScore)
                         {
-                            tiles[j, k].MergeTiles(tiles[j, i]);
+                            if (isActionNeedAffectOnGrid)
+                            {
+                                tiles[j, k].MergeTiles(tiles[j, i]);
+                                if (tiles[k, i].TileScore == winScore)
+                                {
+                                    OnWin();
+                                }
+                            }
                             isActionTaken = true;
                         }
                         else
                         {
-                            tiles[j, k + 1].ReplaceTiles(tiles[j, i]);
+                            if (isActionNeedAffectOnGrid)
+                            {
+                                tiles[j, k + 1].ReplaceTiles(tiles[j, i]);
+                            }
                         }
                         break;
                     }
@@ -212,14 +291,32 @@ public class Grid
 
             }
         }
+
+        return isActionTaken;
+    }
+
+    public void DoUp()
+    {
+        bool isActionTaken = UpAction(true);
         if (isActionTaken)
         {
             GenerateRandomTilesForNextStep();
             SaveCurrentTilesStateToStack();
         }
+        else
+        {
+            if (UpAction(false) || DownAction(false) || RightAction(false) || LeftAction(false))
+            {
+
+            }
+            else
+            {
+                OnLose();
+            }
+        }
     }
 
-    public void DoDown()
+    private bool DownAction(bool isActionNeedAffectOnGrid)
     {
         bool isActionTaken = false;
         for (int i = size - 1; i >= 0; i--)
@@ -247,7 +344,10 @@ public class Grid
                     //Если достигнута первая ячейка
                     if (!tiles[j, k].IsBusy && k == size - 1)
                     {
-                        tiles[j, k].ReplaceTiles(tiles[j, i]);
+                        if (isActionNeedAffectOnGrid)
+                        {
+                            tiles[j, k].ReplaceTiles(tiles[j, i]);
+                        }
                         isActionTaken = true;
                         break;
                     }
@@ -257,12 +357,22 @@ public class Grid
                         //Если ячейки совпадают
                         if (tiles[j, k].TileScore == tiles[j, i].TileScore)
                         {
-                            tiles[j, k].MergeTiles(tiles[j, i]);
+                            if (isActionNeedAffectOnGrid)
+                            {
+                                tiles[j, k].MergeTiles(tiles[j, i]);
+                                if (tiles[k, i].TileScore == winScore)
+                                {
+                                    OnWin();
+                                }
+                            }
                             isActionTaken = true;
                         }
                         else
                         {
-                            tiles[j, k - 1].ReplaceTiles(tiles[j, i]);
+                            if (isActionNeedAffectOnGrid)
+                            {
+                                tiles[j, k - 1].ReplaceTiles(tiles[j, i]);
+                            }
                         }
                         break;
                     }
@@ -271,10 +381,28 @@ public class Grid
             }
         }
 
+        return isActionTaken;
+    }
+
+    public void DoDown()
+    {
+        bool isActionTaken = DownAction(true);
+
         if (isActionTaken)
         {
             GenerateRandomTilesForNextStep();
             SaveCurrentTilesStateToStack();
+        }
+        else
+        {
+            if (UpAction(false) || DownAction(false) || RightAction(false) || LeftAction(false))
+            {
+
+            }
+            else
+            {
+                OnLose();
+            }
         }
     }
 
@@ -335,13 +463,10 @@ public class Grid
         }
 
         previousTilesStates.Push(backup);
-
-        Debug.Log("State saved!");
     }
 
     public void ReturnPreviousState()
     {
-        Debug.Log($"Count of saves: {previousTilesStates.Count}");
 
         if (previousTilesStates.Count == 1) return;
 

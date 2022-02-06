@@ -25,6 +25,19 @@ public class GameManager : MonoBehaviour
 
         grid = new Grid(countOfTiles);
         SpawnTiles();
+
+        grid.OnWin += Grid_OnWin;
+        grid.OnLose += Grid_OnLose;
+    }
+
+    private void Grid_OnLose()
+    {
+        Debug.Log("LOSE!");
+    }
+
+    private void Grid_OnWin()
+    {
+        Debug.Log("WIN!");
     }
 
     private void Update()
@@ -72,6 +85,8 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         grid = new Grid(countOfTiles);
+        grid.OnWin += Grid_OnWin;
+        grid.OnLose += Grid_OnLose;
         UpdateTiles();
         grid.DebugGridView();
     }
