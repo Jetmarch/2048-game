@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
         grid.OnWin += Grid_OnWin;
         grid.OnLose += Grid_OnLose;
 
-        tilesUI[3, 0].GetComponent<GridTileUI>().MoveTo(0, 0, stepSize);
+        tilesUI[3, 0].GetComponent<GridTileUI>().MoveToX(0, stepSize);
     }
 
     private void Grid_OnLose()
