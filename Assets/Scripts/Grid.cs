@@ -10,14 +10,15 @@ public class Grid
     private Stack<GridTile[,]> previousTilesStates;
     private int winScore = 2048;
 
+    private MonoBehaviour mono;
+
+
     public delegate void GameOverEvent();
     public event GameOverEvent OnLose;
     public event GameOverEvent OnWin;
 
     /*
-     Реализовать событие победы и событие проигрыша
-     -- Победа наступает, когда два тайла, соединившись, образуют сумму 2048
-     -- Поражение наступает, когда при следующем любом ходе не происходит ни движение тайлов, ни их соединение
+        Реализация пошаговой смены
 
     
      */
@@ -43,6 +44,11 @@ public class Grid
     public GridTile[,] GetTiles()
     {
         return tiles;
+    }
+
+    public void SetMonoForCoroutines(MonoBehaviour mono)
+    {
+        this.mono = mono;
     }
 
     private bool LeftAction(bool isActionNeedAffectOnGrid)
@@ -106,16 +112,19 @@ public class Grid
                         }
                         break;
                     }
+
                 }
 
             }
         }
 
         return isActionTaken;
+
     }
 
     public void DoLeft()
     {
+
 
         bool isActionTaken = LeftAction(true);
 
@@ -297,7 +306,7 @@ public class Grid
 
     public void DoUp()
     {
-        bool isActionTaken = UpAction(true);
+        bool isActionTaken  = UpAction(true);
         if (isActionTaken)
         {
             GenerateRandomTilesForNextStep();
@@ -386,7 +395,7 @@ public class Grid
 
     public void DoDown()
     {
-        bool isActionTaken = DownAction(true);
+        bool isActionTaken  = DownAction(true);
 
         if (isActionTaken)
         {

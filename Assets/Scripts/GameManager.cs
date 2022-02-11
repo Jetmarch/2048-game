@@ -24,10 +24,13 @@ public class GameManager : MonoBehaviour
         tilesUI = new GameObject[countOfTiles, countOfTiles];
 
         grid = new Grid(countOfTiles);
+        grid.SetMonoForCoroutines(this);
         SpawnTiles();
 
         grid.OnWin += Grid_OnWin;
         grid.OnLose += Grid_OnLose;
+
+        tilesUI[3, 0].GetComponent<GridTileUI>().MoveTo(0, 0, stepSize);
     }
 
     private void Grid_OnLose()
@@ -85,6 +88,7 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         grid = new Grid(countOfTiles);
+        grid.SetMonoForCoroutines(this);
         grid.OnWin += Grid_OnWin;
         grid.OnLose += Grid_OnLose;
         UpdateTiles();
