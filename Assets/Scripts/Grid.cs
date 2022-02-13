@@ -10,7 +10,7 @@ public class Grid
     private Stack<GridTile[,]> previousTilesStates;
     private int winScore = 2048;
 
-    private MonoBehaviour mono;
+    private GameObject[,] tilesUI;
 
 
     public delegate void GameOverEvent();
@@ -46,9 +46,9 @@ public class Grid
         return tiles;
     }
 
-    public void SetMonoForCoroutines(MonoBehaviour mono)
+    public void SetTilesUI(GameObject[,] mono)
     {
-        this.mono = mono;
+        this.tilesUI = mono;
     }
 
     private bool LeftAction(bool isActionNeedAffectOnGrid)
@@ -83,6 +83,9 @@ public class Grid
                         if (isActionNeedAffectOnGrid)
                         {
                             tiles[k, i].ReplaceTiles(tiles[j, i]);
+                            tilesUI[j, i].GetComponent<GridTileUI>().MoveToX(k);
+                            tilesUI[k, i] = tilesUI[j, i];
+                            tilesUI[j, i] = null;
                         }
                         isActionTaken = true;
                         break;
@@ -96,6 +99,9 @@ public class Grid
                             if (isActionNeedAffectOnGrid)
                             {
                                 tiles[k, i].MergeTiles(tiles[j, i]);
+                                tilesUI[j, i].GetComponent<GridTileUI>().MoveToX(k, true);
+                                tilesUI[k, i] = tilesUI[j, i];
+                                tilesUI[j, i] = null;
                                 if (tiles[k, i].TileScore == winScore)
                                 {
                                     OnWin();
@@ -108,6 +114,9 @@ public class Grid
                             if (isActionNeedAffectOnGrid)
                             {
                                 tiles[k + 1, i].ReplaceTiles(tiles[j, i]);
+                                tilesUI[j, i].GetComponent<GridTileUI>().MoveToX(k + 1);
+                                tilesUI[k + 1, i] = tilesUI[j, i];
+                                tilesUI[j, i] = null;
                             }
                         }
                         break;
@@ -177,6 +186,9 @@ public class Grid
                         if (isActionNeedAffectOnGrid)
                         {
                             tiles[k, i].ReplaceTiles(tiles[j, i]);
+                            tilesUI[j, i].GetComponent<GridTileUI>().MoveToX(k);
+                            tilesUI[k, i] = tilesUI[j, i];
+                            tilesUI[j, i] = null;
                         }
                         isActionTaken = true;
                         break;
@@ -190,6 +202,9 @@ public class Grid
                             if (isActionNeedAffectOnGrid)
                             {
                                 tiles[k, i].MergeTiles(tiles[j, i]);
+                                tilesUI[j, i].GetComponent<GridTileUI>().MoveToX(k, true);
+                                tilesUI[k, i] = tilesUI[j, i];
+                                tilesUI[j, i] = null;
                                 if (tiles[k, i].TileScore == winScore)
                                 {
                                     OnWin();
@@ -202,6 +217,9 @@ public class Grid
                             if (isActionNeedAffectOnGrid)
                             {
                                 tiles[k - 1, i].ReplaceTiles(tiles[j, i]);
+                                tilesUI[j, i].GetComponent<GridTileUI>().MoveToX(k - 1);
+                                tilesUI[k - 1, i] = tilesUI[j, i];
+                                tilesUI[j, i] = null;
                             }
                         }
                         break;
@@ -267,6 +285,9 @@ public class Grid
                         if (isActionNeedAffectOnGrid)
                         {
                             tiles[j, k].ReplaceTiles(tiles[j, i]);
+                            tilesUI[j, i].GetComponent<GridTileUI>().MoveToY(k);
+                            tilesUI[j, k] = tilesUI[j, i];
+                            tilesUI[j, i] = null;
                         }
                         isActionTaken = true;
                         break;
@@ -280,6 +301,9 @@ public class Grid
                             if (isActionNeedAffectOnGrid)
                             {
                                 tiles[j, k].MergeTiles(tiles[j, i]);
+                                tilesUI[j, i].GetComponent<GridTileUI>().MoveToY(k, true);
+                                tilesUI[j, k] = tilesUI[j, i];
+                                tilesUI[j, i] = null;
                                 if (tiles[k, i].TileScore == winScore)
                                 {
                                     OnWin();
@@ -292,6 +316,9 @@ public class Grid
                             if (isActionNeedAffectOnGrid)
                             {
                                 tiles[j, k + 1].ReplaceTiles(tiles[j, i]);
+                                tilesUI[j, i].GetComponent<GridTileUI>().MoveToY(k + 1);
+                                tilesUI[j, k + 1] = tilesUI[j, i];
+                                tilesUI[j, i] = null;
                             }
                         }
                         break;
@@ -356,6 +383,9 @@ public class Grid
                         if (isActionNeedAffectOnGrid)
                         {
                             tiles[j, k].ReplaceTiles(tiles[j, i]);
+                            tilesUI[j, i].GetComponent<GridTileUI>().MoveToY(k);
+                            tilesUI[j, k] = tilesUI[j, i];
+                            tilesUI[j, i] = null;
                         }
                         isActionTaken = true;
                         break;
@@ -369,6 +399,9 @@ public class Grid
                             if (isActionNeedAffectOnGrid)
                             {
                                 tiles[j, k].MergeTiles(tiles[j, i]);
+                                tilesUI[j, i].GetComponent<GridTileUI>().MoveToY(k, true);
+                                tilesUI[j, k] = tilesUI[j, i];
+                                tilesUI[j, i] = null;
                                 if (tiles[k, i].TileScore == winScore)
                                 {
                                     OnWin();
@@ -381,6 +414,9 @@ public class Grid
                             if (isActionNeedAffectOnGrid)
                             {
                                 tiles[j, k - 1].ReplaceTiles(tiles[j, i]);
+                                tilesUI[j, i].GetComponent<GridTileUI>().MoveToY(k - 1);
+                                tilesUI[j, k - 1] = tilesUI[j, i];
+                                tilesUI[j, i] = null;
                             }
                         }
                         break;
