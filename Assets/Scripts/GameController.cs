@@ -14,6 +14,8 @@ public class GameController : MonoBehaviour
     private TextMeshProUGUI gameResult;
     [SerializeField]
     private TextMeshProUGUI pointsText;
+    [SerializeField]
+    private TextMeshProUGUI highscoreText;
 
     private void Awake()
     {
@@ -33,6 +35,7 @@ public class GameController : MonoBehaviour
         gameResult.text = string.Empty;
 
         SetPoints(0);
+        SetHighScore();
         IsGameStarted = true;
 
         Field.instance.GenerateField();
@@ -41,12 +44,20 @@ public class GameController : MonoBehaviour
     public void AddPoints(int points)
     {
         SetPoints(Points + points);
+
+        PointsSaver.instance.CheckHighScoreAndSave(Points);
+        SetHighScore();
     }
 
     private void SetPoints(int points)
     {
         Points = points;
         pointsText.text = Points.ToString();
+    }
+
+    private void SetHighScore()
+    {
+        highscoreText.text = PointsSaver.instance.GetHighScore().ToString();
     }
 
     public void Win()
