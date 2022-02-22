@@ -39,7 +39,6 @@ public class Cell : MonoBehaviour
         HasMerged = true;
 
         GameController.instance.AddPoints(Points);
-
     }
 
     public void ResetFlag()
@@ -67,7 +66,7 @@ public class Cell : MonoBehaviour
     public void UpdateCell()
     {
         points.text = IsEmpty ? string.Empty : Points.ToString();
-        points.color = Value <= 2 ? ColorManager.instance.PointsDarkColor : ColorManager.instance.PointsLigthColor;
+        points.color = Value <= 1 || Value == 8 ? ColorManager.instance.PointsDarkColor : ColorManager.instance.PointsLigthColor;
         image.color = ColorManager.instance.CellColors[Value];
     }
 

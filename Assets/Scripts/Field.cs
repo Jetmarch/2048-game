@@ -19,6 +19,8 @@ public class Field : MonoBehaviour
 
     private Cell[,] field;
 
+    private TempCell[,] previousMove;
+
     private bool isAnyCellMoved;
 
     private void Awake()
@@ -37,6 +39,7 @@ public class Field : MonoBehaviour
     private void CreateField()
     {
         field = new Cell[fieldSize, fieldSize];
+        previousMove = new TempCell[fieldSize, fieldSize];
 
         float fieldWidth = fieldSize * (cellSize + spacing) + spacing;
         rect.sizeDelta = new Vector2(fieldWidth, fieldWidth);
@@ -78,6 +81,7 @@ public class Field : MonoBehaviour
         {
             GenerateRandomCell();
         }
+
     }
 
     private void GenerateRandomCell()
@@ -112,6 +116,8 @@ public class Field : MonoBehaviour
         {
             return;
         }
+
+        SaveField();
 
         isAnyCellMoved = false;
         ResetCellsFlags();
@@ -159,6 +165,30 @@ public class Field : MonoBehaviour
             }
         }
 
+    }
+
+    private void SaveField()
+    {
+        GameController.instance.SetPreviousPoints(GameController.Points);
+        for (int x = 0; x < fieldSize; x++)
+        {
+            for (int y = 0; y < fieldSize; y++)
+            {
+                previousMove[x, y] = new TempCell(x, y, field[x, y].Value);
+            }
+        }
+    }
+
+    public void UndoMove()
+    {
+        GameController.instance.SetPoints(GameController.PreviousPoints);
+        for (int x = 0; x < fieldSize; x++)
+        {
+            for (int y = 0; y < fieldSize; y++)
+            {
+                field[x, y].SetValue(x, y, previousMove[x, y].Value);
+            }
+        }
     }
 
     private Cell FindCellToMerge(Cell cell, Vector2 direction)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,12 +11,23 @@ public class GameController : MonoBehaviour
     public static int Points { get; private set; }
     public static bool IsGameStarted { get; private set; }
 
+    public static int PreviousPoints { get; private set; }
+
     [SerializeField]
     private TextMeshProUGUI gameResult;
     [SerializeField]
     private TextMeshProUGUI pointsText;
     [SerializeField]
     private TextMeshProUGUI highscoreText;
+
+    [SerializeField]
+    private GameObject gameField;
+    [SerializeField]
+    private GameObject menu;
+
+    private bool isAlreadyWin;
+
+    
 
     private void Awake()
     {
@@ -27,17 +39,35 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
-        StartGame();
+        //StartGame();
+        SwipeDetection.SwipeEvent += OnInput;
+    }
+
+    private void OnInput(Vector2 direction)
+    {
+        gameResult.text = "";
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            menu.SetActive(!menu.activeSelf);
+            gameField.SetActive(!gameField.activeSelf);
+        }
     }
 
     public void StartGame()
     {
+        menu.SetActive(false);
+        gameField.SetActive(true);
+
         gameResult.text = string.Empty;
 
         SetPoints(0);
         SetHighScore();
         IsGameStarted = true;
-
+        isAlreadyWin = false;
         Field.instance.GenerateField();
     }
 
@@ -49,10 +79,15 @@ public class GameController : MonoBehaviour
         SetHighScore();
     }
 
-    private void SetPoints(int points)
+    public void SetPoints(int points)
     {
         Points = points;
         pointsText.text = Points.ToString();
+    }
+
+    public void SetPreviousPoints(int points)
+    {
+        PreviousPoints = points;
     }
 
     private void SetHighScore()
@@ -60,10 +95,18 @@ public class GameController : MonoBehaviour
         highscoreText.text = PointsSaver.instance.GetHighScore().ToString();
     }
 
+    public void Undo()
+    {
+        Field.instance.UndoMove();
+    }
+
     public void Win()
     {
-        IsGameStarted = false;
+        if (isAlreadyWin) return;
+
+        //IsGameStarted = false;
         gameResult.text = "You win!";
+        isAlreadyWin = true;
     }
 
     public void Lose()

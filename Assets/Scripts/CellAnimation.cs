@@ -23,7 +23,7 @@ public class CellAnimation : MonoBehaviour
 
         image.color = ColorManager.instance.CellColors[from.Value];
         points.text = from.Points.ToString();
-        points.color = from.Value <= 2 ?
+        points.color = from.Value <= 1 || from.Value == 8 ?
             ColorManager.instance.PointsDarkColor :
             ColorManager.instance.PointsLigthColor;
 
@@ -39,7 +39,7 @@ public class CellAnimation : MonoBehaviour
            {
                image.color = ColorManager.instance.CellColors[to.Value];
                points.text = to.Points.ToString();
-               points.color = to.Value <= 2 ?
+               points.color = to.Value <= 1 || to.Value == 8 ?
                     ColorManager.instance.PointsDarkColor :
                     ColorManager.instance.PointsLigthColor;
            });
@@ -62,7 +62,7 @@ public class CellAnimation : MonoBehaviour
 
         image.color = ColorManager.instance.CellColors[cell.Value];
         points.text = cell.Points.ToString();
-        points.color = cell.Value <= 2 ?
+        points.color = cell.Value <= 1 || cell.Value == 8 ?
              ColorManager.instance.PointsDarkColor :
              ColorManager.instance.PointsLigthColor;
 
