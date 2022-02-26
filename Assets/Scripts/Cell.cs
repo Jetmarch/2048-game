@@ -10,7 +10,7 @@ public class Cell : MonoBehaviour
     public int Y { get; private set; }
 
     public int Value { get; private set; }
-    public int Points => Value == 0 ? 0 : (int)Mathf.Pow(2, Value);
+    public ulong Points => Value == 0 ? 0 : (ulong)Mathf.Pow(2, Value);
     public bool IsEmpty => Value == 0;
     public bool HasMerged { get; private set; }
 

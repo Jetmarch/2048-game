@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,22 +17,22 @@ public class PointsSaver : MonoBehaviour
 
         if (!PlayerPrefs.HasKey(highscoreKey))
         {
-            PlayerPrefs.SetInt(highscoreKey, 0);
+            PlayerPrefs.SetString(highscoreKey, "0");
         }
     }
 
-    public void CheckHighScoreAndSave(int currentPoints)
+    public void CheckHighScoreAndSave(ulong currentPoints)
     {
-        int currentHighscore = PlayerPrefs.GetInt(highscoreKey);
+        ulong currentHighscore = (ulong)Convert.ToDouble(PlayerPrefs.GetString(highscoreKey));
 
         if(currentPoints > currentHighscore)
         {
-            PlayerPrefs.SetInt(highscoreKey, currentPoints);
+            PlayerPrefs.SetString(highscoreKey, currentPoints.ToString());
         }
     }
 
-    public int GetHighScore()
+    public Points GetHighScore()
     {
-        return PlayerPrefs.GetInt(highscoreKey);
+        return new Points((ulong)Convert.ToDouble(PlayerPrefs.GetString(highscoreKey)));
     }
 }

@@ -8,10 +8,10 @@ public class GameController : MonoBehaviour
 {
     public static GameController instance;
 
-    public static int Points { get; private set; }
+    public static Points Points { get; private set; }
     public static bool IsGameStarted { get; private set; }
 
-    public static int PreviousPoints { get; private set; }
+    public static ulong PreviousPoints { get; private set; }
 
     [SerializeField]
     private TextMeshProUGUI gameResult;
@@ -53,12 +53,20 @@ public class GameController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Escape))
         {
             menu.SetActive(!menu.activeSelf);
+            IsGameStarted = !IsGameStarted;
             gameField.SetActive(!gameField.activeSelf);
         }
+#if UNITY_EDITOR
+        if(Input.GetKey(KeyCode.F))
+        {
+            AddPoints(1000);
+        }
+#endif
     }
 
     public void StartGame()
     {
+        Points = new Points();
         menu.SetActive(false);
         gameField.SetActive(true);
 
@@ -71,21 +79,22 @@ public class GameController : MonoBehaviour
         Field.instance.GenerateField();
     }
 
-    public void AddPoints(int points)
+    public void AddPoints(ulong points)
     {
-        SetPoints(Points + points);
 
-        PointsSaver.instance.CheckHighScoreAndSave(Points);
+        SetPoints(Points.Amount + points);
+
+        PointsSaver.instance.CheckHighScoreAndSave(Points.Amount);
         SetHighScore();
     }
 
-    public void SetPoints(int points)
+    public void SetPoints(ulong points)
     {
-        Points = points;
+        Points.Amount = points;
         pointsText.text = Points.ToString();
     }
 
-    public void SetPreviousPoints(int points)
+    public void SetPreviousPoints(ulong points)
     {
         PreviousPoints = points;
     }

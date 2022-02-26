@@ -169,7 +169,7 @@ public class Field : MonoBehaviour
 
     private void SaveField()
     {
-        GameController.instance.SetPreviousPoints(GameController.Points);
+        GameController.instance.SetPreviousPoints(GameController.Points.Amount);
         for (int x = 0; x < fieldSize; x++)
         {
             for (int y = 0; y < fieldSize; y++)
