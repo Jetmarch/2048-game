@@ -15,6 +15,7 @@ public class PointsSaver : MonoBehaviour
             instance = this;
         }
 
+        PlayerPrefs.DeleteAll();
         if (!PlayerPrefs.HasKey(highscoreKey))
         {
             PlayerPrefs.SetString(highscoreKey, "0");
@@ -23,7 +24,12 @@ public class PointsSaver : MonoBehaviour
 
     public void CheckHighScoreAndSave(ulong currentPoints)
     {
-        ulong currentHighscore = (ulong)Convert.ToDouble(PlayerPrefs.GetString(highscoreKey));
+        ulong currentHighscore; 
+        bool success = ulong.TryParse((PlayerPrefs.GetString(highscoreKey)), out currentHighscore);
+        if(!success)
+        {
+            currentHighscore = 0;
+        }
 
         if(currentPoints > currentHighscore)
         {
