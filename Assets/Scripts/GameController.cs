@@ -106,6 +106,8 @@ public class GameController : MonoBehaviour
 
     public void Undo()
     {
+        if (!IsGameStarted) return;
+
         Field.instance.UndoMove();
     }
 

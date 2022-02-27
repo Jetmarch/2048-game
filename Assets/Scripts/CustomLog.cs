@@ -9,8 +9,6 @@ public class CustomLog : MonoBehaviour
     Queue logQueue = new Queue();
     void Start()
     {
-        Debug.Log("Log");
-        Debug.Log("Log2");
     }
 
     private void OnEnable()

@@ -15,7 +15,6 @@ public class PointsSaver : MonoBehaviour
             instance = this;
         }
 
-        PlayerPrefs.DeleteAll();
         if (!PlayerPrefs.HasKey(highscoreKey))
         {
             PlayerPrefs.SetString(highscoreKey, "0");
