@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
 
 public class GameController : MonoBehaviour
 {
@@ -25,6 +26,15 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private GameObject menu;
 
+    [Space(3)]
+    [Header("Menu animations")]
+    [SerializeField]
+    private GameObject gameNameText;
+    [SerializeField]
+    private GameObject startGameButton;
+    [SerializeField]
+    private float animationTime = 0.3f;
+
     private bool isAlreadyWin;
 
     
@@ -39,8 +49,11 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
+        DOTween.Init();
         //StartGame();
         SwipeDetection.SwipeEvent += OnInput;
+
+        ToggleMenu();
     }
 
     private void OnInput(Vector2 direction)
@@ -52,9 +65,7 @@ public class GameController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            menu.SetActive(!menu.activeSelf);
-            IsGameStarted = !IsGameStarted;
-            gameField.SetActive(!gameField.activeSelf);
+            ToggleMenu();
         }
 #if UNITY_EDITOR
         if(Input.GetKey(KeyCode.F))
@@ -62,6 +73,25 @@ public class GameController : MonoBehaviour
             AddPoints(1000);
         }
 #endif
+    }
+
+    private void ToggleMenu()
+    {
+        menu.SetActive(!menu.activeSelf);
+        IsGameStarted = !IsGameStarted;
+        gameField.SetActive(!gameField.activeSelf);
+
+        if(menu.activeSelf)
+        {
+            PlayMenuAnimation();
+        }
+    }
+
+    private void PlayMenuAnimation()
+    {
+        startGameButton.transform.DOScale(1f, 0f);
+
+        startGameButton.transform.DOScale(1.2f, animationTime).SetEase(Ease.OutCubic).SetLoops(-1, LoopType.Yoyo);
     }
 
     public void StartGame()

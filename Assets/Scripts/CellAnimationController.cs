@@ -17,7 +17,6 @@ public class CellAnimationController : MonoBehaviour
             instance = this;
         }
 
-        DOTween.Init();
     }
 
     public void SmoothTransition(Cell from, Cell to, bool isMerging)
