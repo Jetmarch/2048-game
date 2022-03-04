@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class GameController : MonoBehaviour
@@ -29,13 +30,17 @@ public class GameController : MonoBehaviour
     [Space(3)]
     [Header("Menu animations")]
     [SerializeField]
-    private GameObject gameNameText;
+    private TextMeshProUGUI gameNameText;
     [SerializeField]
     private GameObject startGameButton;
     [SerializeField]
     private float animationTime = 0.3f;
+    [SerializeField]
+    private float fadeInOutAnimationTime = 0.3f;
 
     private bool isAlreadyWin;
+
+    private Sequence sequence;
 
     
 
@@ -45,6 +50,10 @@ public class GameController : MonoBehaviour
         {
             instance = this;
         }
+
+#if UNITY_ANDROID
+        Screen.fullScreen = false;
+#endif
     }
 
     private void Start()
@@ -53,7 +62,7 @@ public class GameController : MonoBehaviour
         //StartGame();
         SwipeDetection.SwipeEvent += OnInput;
 
-        ToggleMenu();
+        ToggleMenu(false);
     }
 
     private void OnInput(Vector2 direction)
@@ -65,7 +74,7 @@ public class GameController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            ToggleMenu();
+            ToggleMenu(false);
         }
 #if UNITY_EDITOR
         if(Input.GetKey(KeyCode.F))
@@ -75,17 +84,44 @@ public class GameController : MonoBehaviour
 #endif
     }
 
-    private void ToggleMenu()
+    /// <summary>
+    /// Отображение меню или игрового поля
+    /// True - игровое поле
+    /// False - меню
+    /// </summary>
+    /// <param name="state"></param>
+    private void ToggleMenu(bool state)
     {
-        menu.SetActive(!menu.activeSelf);
-        IsGameStarted = !IsGameStarted;
-        gameField.SetActive(!gameField.activeSelf);
+        IsGameStarted = state;
 
-        if(menu.activeSelf)
-        {
-            PlayMenuAnimation();
+        if (state)
+         {
+            if (sequence != null)
+            {
+                sequence.Complete();
+            }
+            sequence = DOTween.Sequence();
+            gameField.GetComponent<CanvasGroup>().interactable = true;
+            menu.GetComponent<CanvasGroup>().interactable = false;
+            sequence.Append(menu.GetComponent<CanvasGroup>().DOFade(0f, fadeInOutAnimationTime));
+            sequence.Join(gameField.GetComponent<CanvasGroup>().DOFade(1f, fadeInOutAnimationTime));
         }
+         else
+         {
+            if(sequence != null)
+            {
+                sequence.Complete();
+            }
+            sequence = DOTween.Sequence();
+            menu.GetComponent<CanvasGroup>().interactable = true;
+            gameField.GetComponent<CanvasGroup>().interactable = false;
+            sequence.Append(gameField.GetComponent<CanvasGroup>().DOFade(0f, fadeInOutAnimationTime));
+            sequence.Join(menu.GetComponent<CanvasGroup>().DOFade(1f, fadeInOutAnimationTime));
+
+            PlayMenuAnimation();
+         }
     }
+
 
     private void PlayMenuAnimation()
     {
@@ -97,8 +133,6 @@ public class GameController : MonoBehaviour
     public void StartGame()
     {
         Points = new Points();
-        menu.SetActive(false);
-        gameField.SetActive(true);
 
         gameResult.text = string.Empty;
 
@@ -107,11 +141,11 @@ public class GameController : MonoBehaviour
         IsGameStarted = true;
         isAlreadyWin = false;
         Field.instance.GenerateField();
+        ToggleMenu(true);
     }
 
     public void AddPoints(ulong points)
     {
-
         SetPoints(Points.Amount + points);
 
         PointsSaver.instance.CheckHighScoreAndSave(Points.Amount);
@@ -144,7 +178,6 @@ public class GameController : MonoBehaviour
     public void Win()
     {
         if (isAlreadyWin) return;
-
         //IsGameStarted = false;
         gameResult.text = "You win!";
         isAlreadyWin = true;
