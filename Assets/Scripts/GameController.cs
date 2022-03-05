@@ -15,6 +15,11 @@ public class GameController : MonoBehaviour
 
     public static ulong PreviousPoints { get; private set; }
 
+    [Header("Games results")]
+    [SerializeField]
+    private CanvasGroup resultsScreen;
+    [SerializeField]
+    private GameObject resultsImage;
     [SerializeField]
     private TextMeshProUGUI gameResult;
     [SerializeField]
@@ -79,7 +84,7 @@ public class GameController : MonoBehaviour
 #if UNITY_EDITOR
         if(Input.GetKey(KeyCode.F))
         {
-            AddPoints(1000);
+            Lose();
         }
 #endif
     }
@@ -132,6 +137,7 @@ public class GameController : MonoBehaviour
 
     public void StartGame()
     {
+        resultsScreen.alpha = 0f;
         Points = new Points();
 
         gameResult.text = string.Empty;
@@ -186,6 +192,11 @@ public class GameController : MonoBehaviour
     public void Lose()
     {
         IsGameStarted = false;
+        float fieldWidth = Field.instance.fieldSize * (Field.instance.cellSize + Field.instance.spacing) + Field.instance.spacing;
+        resultsImage.GetComponent<RectTransform>().sizeDelta = new Vector2(fieldWidth, fieldWidth);
+
+        resultsScreen.DOFade(1.0f, fadeInOutAnimationTime);
+
         gameResult.text = "You lose!";
     }
 }
