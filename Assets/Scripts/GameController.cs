@@ -72,7 +72,10 @@ public class GameController : MonoBehaviour
 
     private void OnInput(Vector2 direction)
     {
+        if (!IsGameStarted) return;
+
         gameResult.text = "";
+        resultsScreen.alpha = 0f;
     }
 
     private void Update()
