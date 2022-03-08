@@ -13,19 +13,22 @@ public class Cell : MonoBehaviour
     public ulong Points => Value == 0 ? 0 : (ulong)Mathf.Pow(2, Value);
     public bool IsEmpty => Value == 0;
     public bool HasMerged { get; private set; }
+    public bool IsBonusTile { get; private set; }
 
     public const int MaxValue = 11;
 
     [SerializeField] private Image image;
     [SerializeField] private TextMeshProUGUI points;
+    [SerializeField] private GameObject bonusLight;
 
     private CellAnimation currentAnimation;
 
-    public void SetValue(int x, int y, int value, bool updateUI = true)
+    public void SetValue(int x, int y, int value, bool updateUI = true, bool isBonusTile = false)
     {
         this.X = x;
         this.Y = y;
         this.Value = value;
+        this.IsBonusTile = isBonusTile;
 
         if (updateUI)
         {
@@ -41,6 +44,21 @@ public class Cell : MonoBehaviour
         GameController.instance.AddPoints(Points);
     }
 
+    public void IncreaseBonusValue()
+    {
+        Value += 2;
+        HasMerged = true;
+
+        GameController.instance.AddPoints(Points);
+    }
+    public void IncreaseDoubleBonusValue()
+    {
+        Value += 3;
+        HasMerged = true;
+
+        GameController.instance.AddPoints(Points);
+    }
+
     public void ResetFlag()
     {
         HasMerged = false;
@@ -49,25 +67,47 @@ public class Cell : MonoBehaviour
     public void MergeWithCell(Cell otherCell)
     {
         CellAnimationController.instance.SmoothTransition(this, otherCell, true);
-        otherCell.IncreaseValue();
-        SetValue(X, Y, 0);
 
+        if(IsBonusTile && otherCell.IsBonusTile)
+        {
+            otherCell.IncreaseDoubleBonusValue();
+        }
+        else if (IsBonusTile || otherCell.IsBonusTile)
+        {
+            otherCell.IncreaseBonusValue();
+        }
+        else
+        {
+            otherCell.IncreaseValue();
+        }
+
+        bool rndBonus = Random.Range(0, 10) == 0 ? true : false;
+        otherCell.IsBonusTile = rndBonus;
+
+        SetValue(X, Y, 0);
     }
 
     public void MoveToCell(Cell target)
     {
         CellAnimationController.instance.SmoothTransition(this, target, false);
 
-        target.SetValue(target.X, target.Y, Value, false);
+        target.SetValue(target.X, target.Y, Value, false, IsBonusTile);
         SetValue(X, Y, 0);
-
     }
 
     public void UpdateCell()
     {
         points.text = IsEmpty ? string.Empty : Points.ToString();
         points.color = Value <= 1 || Value == 8 ? ColorManager.instance.PointsDarkColor : ColorManager.instance.PointsLigthColor;
-        image.color = ColorManager.instance.CellColors[Value];
+        image.color = ColorManager.instance.CellColors[Mathf.Clamp(Value, 0, MaxValue)];
+        if(IsBonusTile)
+        {
+            bonusLight.SetActive(true);
+        }
+        else
+        {
+            bonusLight.SetActive(false);
+        }
     }
 
     public void SetAnimation(CellAnimation animation)

@@ -103,9 +103,10 @@ public class Field : MonoBehaviour
         }
 
         int value = Random.Range(0, 10) == 0 ? 2 : 1;
+        bool isBonusTile = Random.Range(0, 10) == 0 ? true : false;
 
         var cell = emptyCells[Random.Range(0, emptyCells.Count)];
-        cell.SetValue(cell.X, cell.Y, value, false);
+        cell.SetValue(cell.X, cell.Y, value, false, isBonusTile);
 
         CellAnimationController.instance.SmoothAppear(cell);
     }

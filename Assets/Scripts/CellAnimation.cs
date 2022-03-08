@@ -11,6 +11,8 @@ public class CellAnimation : MonoBehaviour
     private Image image;
     [SerializeField]
     private TextMeshProUGUI points;
+    [SerializeField]
+    private GameObject bonusLight;
 
     private float moveTime = .1f;
     private float appearTime = .1f;
@@ -21,11 +23,19 @@ public class CellAnimation : MonoBehaviour
         from.CancelAnimation();
         to.SetAnimation(this);
 
-        image.color = ColorManager.instance.CellColors[from.Value];
+        image.color = ColorManager.instance.CellColors[Mathf.Clamp(from.Value, 0, Cell.MaxValue)];
         points.text = from.Points.ToString();
         points.color = from.Value <= 1 || from.Value == 8 ?
             ColorManager.instance.PointsDarkColor :
             ColorManager.instance.PointsLigthColor;
+        if (from.IsBonusTile)
+        {
+            bonusLight.SetActive(true);
+        }
+        else
+        {
+            bonusLight.SetActive(false);
+        }
 
         transform.position = from.transform.position;
 
@@ -37,11 +47,20 @@ public class CellAnimation : MonoBehaviour
         {
             sequence.AppendCallback(() =>
            {
-               image.color = ColorManager.instance.CellColors[to.Value];
+               image.color = ColorManager.instance.CellColors[Mathf.Clamp(to.Value, 0, Cell.MaxValue)];
                points.text = to.Points.ToString();
                points.color = to.Value <= 1 || to.Value == 8 ?
                     ColorManager.instance.PointsDarkColor :
                     ColorManager.instance.PointsLigthColor;
+
+               if (to.IsBonusTile)
+               {
+                   bonusLight.SetActive(true);
+               }
+               else
+               {
+                   bonusLight.SetActive(false);
+               }
            });
 
             sequence.Append(transform.DOScale(1.2f, appearTime));
@@ -60,11 +79,19 @@ public class CellAnimation : MonoBehaviour
         cell.CancelAnimation();
         cell.SetAnimation(this);
 
-        image.color = ColorManager.instance.CellColors[cell.Value];
+        image.color = ColorManager.instance.CellColors[Mathf.Clamp(cell.Value, 0, Cell.MaxValue)];
         points.text = cell.Points.ToString();
         points.color = cell.Value <= 1 || cell.Value == 8 ?
              ColorManager.instance.PointsDarkColor :
              ColorManager.instance.PointsLigthColor;
+        if (cell.IsBonusTile)
+        {
+            bonusLight.SetActive(true);
+        }
+        else
+        {
+            bonusLight.SetActive(false);
+        }
 
         transform.position = cell.transform.position;
         transform.localScale = Vector2.zero;
