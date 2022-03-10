@@ -43,6 +43,14 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private float fadeInOutAnimationTime = 0.3f;
 
+    [Space(3)]
+    [Header("Events")]
+    [SerializeField]
+    private SOEvent gameWin;
+    [SerializeField]
+    private SOEvent gameLose;
+
+
     private bool isAlreadyWin;
 
     private Sequence sequence;
@@ -190,6 +198,8 @@ public class GameController : MonoBehaviour
         //IsGameStarted = false;
         gameResult.text = "You win!";
         isAlreadyWin = true;
+
+        gameWin.Raise();
     }
 
     public void Lose()
@@ -201,5 +211,7 @@ public class GameController : MonoBehaviour
         resultsScreen.DOFade(1.0f, fadeInOutAnimationTime);
 
         gameResult.text = "You lose!";
+
+        gameLose.Raise();
     }
 }

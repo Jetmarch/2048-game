@@ -17,6 +17,11 @@ public class Field : MonoBehaviour
     [SerializeField] private Cell cellPref;
     [SerializeField] private RectTransform rect;
 
+    [Space(3)]
+    [Header("Game field events")]
+    [SerializeField]
+    private SOEvent bonusCreated;
+
     private Cell[,] field;
 
     private TempCell[,] previousMove;
@@ -104,6 +109,11 @@ public class Field : MonoBehaviour
 
         int value = Random.Range(0, 10) == 0 ? 2 : 1;
         bool isBonusTile = Random.Range(0, 10) == 0 ? true : false;
+
+        if(isBonusTile)
+        {
+            bonusCreated.Raise();
+        }
 
         var cell = emptyCells[Random.Range(0, emptyCells.Count)];
         cell.SetValue(cell.X, cell.Y, value, false, isBonusTile);

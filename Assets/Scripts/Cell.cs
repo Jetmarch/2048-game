@@ -20,6 +20,7 @@ public class Cell : MonoBehaviour
     [SerializeField] private Image image;
     [SerializeField] private TextMeshProUGUI points;
     [SerializeField] private GameObject bonusLight;
+    [SerializeField] private SOEvent bonusCreated;
 
     private CellAnimation currentAnimation;
 
@@ -82,6 +83,12 @@ public class Cell : MonoBehaviour
         }
 
         bool rndBonus = Random.Range(0, 10) == 0 ? true : false;
+
+        if(rndBonus)
+        {
+            bonusCreated.Raise();
+        }
+
         otherCell.IsBonusTile = rndBonus;
 
         SetValue(X, Y, 0);
