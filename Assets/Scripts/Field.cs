@@ -175,7 +175,7 @@ public class Field : MonoBehaviour
         {
             for (int y = 0; y < fieldSize; y++)
             {
-                previousMove[x, y] = new TempCell(x, y, field[x, y].Value);
+                previousMove[x, y] = new TempCell(x, y, field[x, y].Value, field[x, y].IsBonusTile);
             }
         }
     }
@@ -187,7 +187,7 @@ public class Field : MonoBehaviour
         {
             for (int y = 0; y < fieldSize; y++)
             {
-                field[x, y].SetValue(x, y, previousMove[x, y].Value);
+                field[x, y].SetValue(x, y, previousMove[x, y].Value, true, previousMove[x, y].IsBonusTile);
             }
         }
     }

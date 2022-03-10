@@ -10,10 +10,13 @@ public class TempCell
 
     public int Value { get; set; }
 
-    public TempCell (int x, int y, int value)
+    public bool IsBonusTile { get; set; }
+
+    public TempCell (int x, int y, int value, bool isBonusTile)
     {
         X = x;
         Y = y;
         Value = value;
+        IsBonusTile = isBonusTile;
     }
 }
