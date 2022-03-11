@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "SOEvent", menuName = "Events")]
 public class SOEvent : ScriptableObject
 {
-    private List<SOListener> listeners = new List<SOListener>();
+    private List<EventListener> listeners = new List<EventListener>();
 
     public void Raise()
     {
@@ -15,12 +15,12 @@ public class SOEvent : ScriptableObject
         }
     }
 
-    public void RegisterListener(SOListener listener)
+    public void RegisterListener(EventListener listener)
     {
         listeners.Add(listener);
     }
 
-    public void UnregisterListener(SOListener listener)
+    public void UnregisterListener(EventListener listener)
     {
         if (listeners.Contains(listener))
         {
