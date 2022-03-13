@@ -12,6 +12,10 @@ public class Field : MonoBehaviour
     public float spacing;
     public int fieldSize;
     public int initCellCount;
+    [SerializeField]
+    private SOFloat chanseOfBonusInPercent;
+    [SerializeField]
+    private SOBool isBonusesActive;
 
     [Space(10)]
     [SerializeField] private Cell cellPref;
@@ -21,6 +25,8 @@ public class Field : MonoBehaviour
     [Header("Game field events")]
     [SerializeField]
     private SOEvent bonusCreated;
+
+    
 
     private Cell[,] field;
 
@@ -108,11 +114,15 @@ public class Field : MonoBehaviour
         }
 
         int value = Random.Range(0, 10) == 0 ? 2 : 1;
-        bool isBonusTile = Random.Range(0, 10) == 0 ? true : false;
+        bool isBonusTile = false;
 
-        if(isBonusTile)
+        if (isBonusesActive.value)
         {
-            bonusCreated.Raise();
+            isBonusTile = Random.Range(0, 100) <= chanseOfBonusInPercent.value ? true : false;
+            if (isBonusTile)
+            {
+                bonusCreated.Raise();
+            }
         }
 
         var cell = emptyCells[Random.Range(0, emptyCells.Count)];
@@ -259,10 +269,10 @@ public class Field : MonoBehaviour
         {
             for (int y = 0; y < fieldSize; y++)
             {
-                if(field[x, y].Value == Cell.MaxValue)
+                if(field[x, y].Value >= Cell.MaxValue)
                 {
                     GameController.instance.Win();
-                    return;
+                    //return;
                 }
 
                 if(lose &&

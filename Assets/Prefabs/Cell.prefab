@@ -303,3 +303,6 @@ MonoBehaviour:
   points: {fileID: 2570467991998574905}
   bonusLight: {fileID: 1857330252424739650}
   bonusCreated: {fileID: 11400000, guid: 6ec64d709b2f0cc4c8122bb6c6a20a7f, type: 2}
+  chanceOfBonusInPercent: {fileID: 11400000, guid: 7cc48f17c116bd74b8c70ce51feeb089,
+    type: 2}
+  isBonusesActive: {fileID: 11400000, guid: 55582c62ba4a4fc4ca7748be38fdbb2f, type: 2}

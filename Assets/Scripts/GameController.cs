@@ -21,11 +21,13 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private GameObject resultsImage;
     [SerializeField]
-    private TextMeshProUGUI gameResult;
+    private TextMeshProUGUI loseText;
     [SerializeField]
     private TextMeshProUGUI pointsText;
     [SerializeField]
     private TextMeshProUGUI highscoreText;
+    [SerializeField]
+    private GameObject winText;
 
     [SerializeField]
     private GameObject gameField;
@@ -82,7 +84,7 @@ public class GameController : MonoBehaviour
     {
         if (!IsGameStarted) return;
 
-        gameResult.text = "";
+        loseText.text = "";
         resultsScreen.alpha = 0f;
     }
 
@@ -151,7 +153,8 @@ public class GameController : MonoBehaviour
         resultsScreen.alpha = 0f;
         Points = new Points();
 
-        gameResult.text = string.Empty;
+        loseText.text = string.Empty;
+        winText.SetActive(false);
 
         SetPoints(0);
         SetHighScore();
@@ -196,7 +199,10 @@ public class GameController : MonoBehaviour
     {
         if (isAlreadyWin) return;
         //IsGameStarted = false;
-        gameResult.text = "You win!";
+        /*losePanel.text = "You win!";*/
+
+        winText.SetActive(true);
+
         isAlreadyWin = true;
 
         gameWin.Raise();
@@ -210,7 +216,14 @@ public class GameController : MonoBehaviour
 
         resultsScreen.DOFade(1.0f, fadeInOutAnimationTime);
 
-        gameResult.text = "You lose!";
+        if (isAlreadyWin)
+        {
+            loseText.text = "Game Over!";
+        }
+        else
+        {
+            loseText.text = "You lose!";
+        }
 
         gameLose.Raise();
     }

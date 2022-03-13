@@ -22,6 +22,9 @@ public class Cell : MonoBehaviour
     [SerializeField] private GameObject bonusLight;
     [SerializeField] private SOEvent bonusCreated;
 
+    [SerializeField] private SOFloat chanceOfBonusInPercent;
+    [SerializeField] private SOBool isBonusesActive;
+
     private CellAnimation currentAnimation;
 
     public void SetValue(int x, int y, int value, bool updateUI = true, bool isBonusTile = false)
@@ -82,11 +85,17 @@ public class Cell : MonoBehaviour
             otherCell.IncreaseValue();
         }
 
-        bool rndBonus = Random.Range(0, 10) == 0 ? true : false;
 
-        if(rndBonus)
+
+        bool rndBonus = false;
+
+        if (isBonusesActive.value)
         {
-            bonusCreated.Raise();
+            rndBonus = Random.Range(0, 100) <= chanceOfBonusInPercent.value ? true : false;
+            if (rndBonus)
+            {
+                bonusCreated.Raise();
+            }
         }
 
         otherCell.IsBonusTile = rndBonus;
